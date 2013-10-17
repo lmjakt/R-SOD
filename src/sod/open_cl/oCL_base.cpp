@@ -1,5 +1,6 @@
 #include "oCL_base.h"
 #include "clError.h"
+#include "../oCL_Kernels/oCL_Kernels.h"
 #include <iostream>
 #include <fstream>
 #include <string.h>
@@ -129,50 +130,82 @@ void OCL_base::kernel_properties()
 
 }
 
+char* make_source(std::string prefix, const char* const s_code, size_t& buf_length){
+  buf_length = 1 + prefix.length() + 1 + strlen(s_code);
+  char* buffer = new char[ buf_length ];
+  memcpy((void*)buffer, (void*)prefix.c_str(), prefix.length());
+  buffer[prefix.length()] = '\n';
+  memcpy((void*)(buffer + prefix.length() + 1), (void*)s_code, strlen(s_code));
+  buffer[buf_length-1] = 0;
+  return(buffer);
+}
+  
+
 void OCL_base::init_kernel(const char* kernel_source, const char* kernel_name, 
 			   std::string define_statements, bool compile_source)
 {
   if(!compile_source){
     std::cerr << "Binary sources not supported yet" << std::endl;
     return;
-  }
+  }  
 
-  std::ifstream in(kernel_source, std::ios::binary);
-  if(!in){
-    std::cerr << "Unable to open kernel source file" << std::endl;
-    return;
+  char* kernel_buffer = 0;
+  size_t k_buffer_size=0;
+  // if the kernel source has been predefined in "../oCL_Kernels/oCL_Kernels.h"
+  // then use that.
+  if(!strcmp(kernel_source, "move_deltoids")){  // strcmp returns 0 for equal
+    kernel_buffer = make_source(define_statements, move_deltoids, k_buffer_size);
   }
-  in.seekg(0, std::ios::end);
-  ssize_t end_pos = in.tellg();
-  std::cout << "in.tellg() reports : " << in.tellg() << std::endl;
-  in.seekg(0, std::ios::beg);
-  if(!end_pos){
-    std::cerr << "Unable to read from kernel source file" << std::endl;
-    return;
+  if(!strcmp(kernel_source, "move_deltoids_2")){
+    kernel_buffer = make_source(define_statements, move_deltoids_2, k_buffer_size);
   }
-  // prepend #define statements to the kernal source.
-  // add one extra \n to the 
+  if(!strcmp(kernel_source, "move_deltoids_dummy")){
+    kernel_buffer = make_source(define_statements, move_deltoids_dummy, k_buffer_size);
+  }
+    
 
-  size_t k_buffer_size = 1 + define_statements.size() + (size_t)end_pos + 1;
-  char* kernel_buffer = new char[ k_buffer_size ];
-  memset((void*)kernel_buffer, 0, sizeof(char) * k_buffer_size);
-  //  kernel_buffer[k_buffer_size] = 0;  // this may not be needed.
-  
-  size_t copied_bytes = define_statements.copy(kernel_buffer, define_statements.size());
-  if(copied_bytes != define_statements.size()){
-    std::cerr << "Unable to copy the full define statements" << std::endl;
-    delete []kernel_buffer;
-  }
+  // if kernel buffer is not defined yet, try to read it from a file
+  if(!kernel_buffer){
+    std::ifstream in(kernel_source, std::ios::binary);
+    if(!in){
+      std::cerr << "Unable to open kernel source file" << std::endl;
+      return;
+    }
+    in.seekg(0, std::ios::end);
+    ssize_t end_pos = in.tellg();
+    std::cout << "in.tellg() reports : " << in.tellg() << std::endl;
+    in.seekg(0, std::ios::beg);
+    if(!end_pos){
+      std::cerr << "Unable to read from kernel source file" << std::endl;
+      return;
+    }
+    // prepend #define statements to the kernal source.
+    // add one extra \n to the 
+    
+    k_buffer_size = 1 + define_statements.size() + (size_t)end_pos + 1;
+    kernel_buffer = new char[ k_buffer_size ];
+    memset((void*)kernel_buffer, 0, sizeof(char) * k_buffer_size);
+    //  kernel_buffer[k_buffer_size] = 0;  // this may not be needed.
+    
+    size_t copied_bytes = define_statements.copy(kernel_buffer, define_statements.size());
+    if(copied_bytes != define_statements.size()){
+      std::cerr << "Unable to copy the full define statements" << std::endl;
+      delete []kernel_buffer;
+      return;
+    }
 
-  kernel_buffer[ define_statements.size() ] = '\n'; // add a new line for safety
+    kernel_buffer[ define_statements.size() ] = '\n'; // add a new line for safety
 
-  in.read((kernel_buffer + 1 + define_statements.size()), end_pos);
-  if(in.gcount() != end_pos){
-    std::cerr << "Unable to read to end of kernel source file: " << end_pos << " != " << in.gcount() << std::endl;
-    delete []kernel_buffer;
-    return;
+    in.read((kernel_buffer + 1 + define_statements.size()), end_pos);
+    if(in.gcount() != end_pos){
+      std::cerr << "Unable to read to end of kernel source file: " << end_pos << " != " << in.gcount() << std::endl;
+      delete []kernel_buffer;
+      return;
+    }
   }
-  
+  // at this point kernel_buffer should be defined.
+  // and we can use it to compile the kernel.
+
   cl_int ret = 0; // return value. Use the same for all.
   
   ret = clGetPlatformIDs(1, &platform_id, &num_platforms);

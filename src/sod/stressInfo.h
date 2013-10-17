@@ -23,6 +23,11 @@ struct stressInfo {
       dimFactors[i] = df[i];
     stress = s;
   }
+  void setStress(std::vector<float> dims, float s){
+    dimNo = activeDimNo = dims.size();
+    dimFactors = dims;
+    stress = s;
+  }
   float dimensionality(){
     float d=0;
     for(unsigned int i=0; i < dimFactors.size(); ++i)

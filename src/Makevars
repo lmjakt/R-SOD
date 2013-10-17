@@ -33,7 +33,9 @@ HEADERS =	sod/oCL_DistanceMapper.h \
 		sod/stressInfo.h \
 		sod/mappingInfo.h \
 		sod/open_cl/oCL_base.h \
-		sod/open_cl/clError.h
+		sod/open_cl/clError.h \
+		sod/DistanceMapper.h \
+		sod/oCL_Kernels/oCL_Kernels.h
 
 SOURCES = 	sod/oCL_DistanceMapper.cpp \
 		sod/oCL_DistanceMapperManager.cpp \
@@ -41,6 +43,7 @@ SOURCES = 	sod/oCL_DistanceMapper.cpp \
 		sod/node_set.cpp \
 		sod/open_cl/oCL_base.cpp \
 		sod/open_cl/clError.cpp \
+		sod/DistanceMapper.cpp \
 		Num.cpp \
 		RcppExports.cpp \
 		rcpp_hello_world.cpp \
@@ -53,6 +56,7 @@ OBJECTS =	sod/oCL_DistanceMapper.o \
 		sod/node_set.o \
 		sod/open_cl/oCL_base.o \
 		sod/open_cl/clError.o \
+		sod/DistanceMapper.o \
 		Num.o \
 		RcppExports.o \
 		rcpp_hello_world.o \

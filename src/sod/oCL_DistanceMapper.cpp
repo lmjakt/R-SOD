@@ -10,8 +10,10 @@
 
 //const char* kernel_source = "/home/martin/applications/R_packages/SOD/src/sod/oCL_Kernels/move_deltoids_dummy.cl";
 //const char* kernel_source = "/home/martin/applications/R_packages/SOD/src/sod/oCL_Kernels/move_deltoids.cl";
-const char* kernel_source = "/home/martin/applications/R_packages/SOD/src/sod/oCL_Kernels/move_deltoids_2.cl";
-const char* kernel_name = "move_deltoids";
+
+//const char* const kernel_source = "/home/martin/applications/R_packages/SOD/src/sod/oCL_Kernels/move_deltoids_2.cl";
+const char* const kernel_source = "move_deltoids_2"; 
+const char* const kernel_name = "move_deltoids";
 
 OCL_DistanceMapper::OCL_DistanceMapper(std::string def_statement)
   : OCL_base(kernel_source, kernel_name, def_statement, true)
