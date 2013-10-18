@@ -3,17 +3,39 @@
 
 #include <Rcpp.h>
 #include <string>
-#include <math.h>
+//#include <math.h>
 #include "sod/oCL_DistanceMapperManager.h"  // not necessary if we use a pointer
+#include "sod/DistanceMapper.h"
 
 // It seems that this _has_ to be here.
 // I could not get away with using it within the RCPP_MODULE part
 using namespace Rcpp;   
 
+// standard squeezer
 class R_DimSqueezer {
- public:
+ public :
   R_DimSqueezer(NumericMatrix r_positions);
   ~R_DimSqueezer();
+
+  Rcpp::List squeeze(unsigned int target_dimensionality, unsigned int iter_no);
+  void useOpenMP(bool use_openMP);
+  
+ private:
+  DistanceMapper* mapper;
+  float* positions;
+  float* distances;
+  unsigned int dimension_no;
+  unsigned int node_no;
+
+  bool multithreaded;
+};
+
+// openCL based squeezer
+// This really ought to be done using inheritance, but .. 
+class R_CL_DimSqueezer {
+ public:
+  R_CL_DimSqueezer(NumericMatrix r_positions);
+  ~R_CL_DimSqueezer();
 
   Rcpp::List squeeze(unsigned int target_dimensionality, unsigned int iter_no, 
 		     unsigned int local_work_size);
@@ -24,23 +46,19 @@ class R_DimSqueezer {
   float* distances;
   unsigned int dimension_no;
   unsigned int node_no;
-
-  // an inline function for calculating a distance
-  float e_dist(float* n1, float* n2){
-    float d = 0;
-    for(unsigned int i=0; i < dimension_no; ++i)
-      d += (n1[i] - n2[i]) * (n1[i] - n2[i]);
-    return(sqrt(d));
-  }
-
 };
+
 
 RCPP_MODULE(mod_R_DimSqueezer) {
   class_<R_DimSqueezer>("R_DimSqueezer")
-
     .constructor<NumericMatrix>()
-
     .method("squeeze", &R_DimSqueezer::squeeze)
+    .method("useOpenMP", &R_DimSqueezer::useOpenMP)
+    ;
+
+  class_<R_CL_DimSqueezer>("R_CL_DimSqueezer")
+    .constructor<NumericMatrix>()
+    .method("squeeze", &R_CL_DimSqueezer::squeeze)
     ;
 };
 

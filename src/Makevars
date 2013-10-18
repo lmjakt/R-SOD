@@ -1,6 +1,7 @@
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_CPPFLAGS = -I/usr/local/cuda/include
-PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` -lOpenCL
+PKG_CXXFLAGS = -fopenmp # -g # use 'R CMD INSTALL -d SOD' instead 
+PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` -lOpenCL 
 
 ## As an alternative, one can also add this code in a file 'configure'
 ##

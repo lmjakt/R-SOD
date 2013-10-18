@@ -31,12 +31,14 @@ class DistanceMapper
   ~DistanceMapper();
 
   MappingInfo reduce_dimensions(unsigned int iter_no, unsigned int target_dim);
+  void use_openMP(bool useMP);
 
  private:
   unsigned int node_no;
   unsigned int dimension_no;
   float* nodes;
   float* node_distances;
+  bool useOpenMP;
 
   // variables created by the mapping process
   std::vector<float> dimFactors;

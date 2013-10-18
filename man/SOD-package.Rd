@@ -3,11 +3,25 @@
 \alias{SOD}
 \docType{package}
 \title{
-What the package does (short line)
+Heuristict mapping of N-dimensional nodes to M-dimensions
 }
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+Maps points in N-dimensions to M-dimensions using a heuristic that 
+tries to retain correct inter-node distances by rearranging nodes
+using errors in the inter-node distances induced by gradually shrinking
+the number of dimensions.
+
+The primary purpose of this is is to represent N-dimensional nodes 
+(points) in a 2-D or 3-D space in order to visualise the relationships
+between nodes.
+
+Since the method is computationally intensive, two classes are provided\cr
+
+R_DimSqueezer\cr
+Uses openMP to parallelise the mapping process\cr
+
+R_CL_DimSqueezer\cr
+Uses openCL to perform the mapping operation on a GPU
 }
 \details{
 \tabular{ll}{
@@ -37,4 +51,18 @@ Maintainer: Martin Jakt <mjakt@z2.keio.jp>
 }
 \examples{
 %% ~~ simple examples of the most important functions ~~
+
+data <- matrix(nrow=100, ncol=6)
+for(i in 1:ncol(data)){
+   data[,i] <- rnorm(100)
+}
+
+ds1 <- new(R_DimSqueezer, data)
+sq1 <- ds1$squeeze(2, 1000)
+
+ds2 <- new(R_CL_DimSqueezer, data)
+sq2 <- ds2$squeeze(2, 1000, 64)
+
+plot.points(sq1)
+plot.stress(sq2)
 }
