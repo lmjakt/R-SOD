@@ -18,6 +18,7 @@ class R_DimSqueezer {
   ~R_DimSqueezer();
 
   Rcpp::List squeeze(unsigned int target_dimensionality, unsigned int iter_no);
+  Rcpp::List squeezeDF(NumericMatrix dimFactors);
   void useOpenMP(bool use_openMP);
   
  private:
@@ -53,6 +54,7 @@ RCPP_MODULE(mod_R_DimSqueezer) {
   class_<R_DimSqueezer>("R_DimSqueezer")
     .constructor<NumericMatrix>()
     .method("squeeze", &R_DimSqueezer::squeeze)
+    .method("squeezeDF", &R_DimSqueezer::squeezeDF)
     .method("useOpenMP", &R_DimSqueezer::useOpenMP)
     ;
 

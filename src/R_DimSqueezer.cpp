@@ -17,6 +17,22 @@ float* matrix_to_array(Rcpp::NumericMatrix& mat)
   return(array);
 }
 
+std::vector<std::vector<float> > matrix_to_array_v(Rcpp::NumericMatrix& mat)
+{
+  std::vector<std::vector<float> > v;
+  if(!mat.ncol() || !mat.nrow())
+    return(v);
+  v.resize(mat.nrow());
+  std::vector<float> v_row(mat.ncol()); // = new float[ mat.ncol() * mat.nrow() ];
+  for(unsigned int i=0; i < (unsigned int)mat.nrow(); ++i){
+    for(unsigned int j=0; j < (unsigned int)mat.ncol(); ++j){
+      v_row[j] = (float)mat(i, j);
+    }
+    v[i] = v_row;
+  }
+  return(v);
+}
+
 float* inter_node_distances(float* nodes, unsigned int node_no, unsigned int dim_no)
 {
   if(!node_no || !dim_no)
@@ -98,6 +114,20 @@ Rcpp::List R_DimSqueezer::squeeze(unsigned int target_dimensionality, unsigned i
   delete []mapInfo.mapped_points;
   return(return_data);
 }
+
+Rcpp::List R_DimSqueezer::squeezeDF(NumericMatrix dimFactors)
+{
+  if(!mapper)
+    return(Rcpp::List::create(Rcpp::Named("Error", "No mapper created")) );
+  
+  std::vector<std::vector<float> > dimFactorVector = matrix_to_array_v(dimFactors);
+
+  MappingInfo mapInfo = mapper->reduce_dimensions(dimFactorVector);
+  Rcpp::List return_data = prepare_return_data(mapInfo);
+  delete []mapInfo.mapped_points;
+  return(return_data);
+}
+
 
 void R_DimSqueezer::useOpenMP(bool use_openMP)
 {

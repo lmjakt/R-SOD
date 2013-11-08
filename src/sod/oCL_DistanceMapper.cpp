@@ -178,6 +178,7 @@ MappingInfo OCL_DistanceMapper::reduce_dimensions(float* points, unsigned int no
   // Let's print out 80 colums to indicate progress
   unsigned int columns = 80;
   unsigned int div = (iterations / columns);
+  div = (div == 0) ? 1 : div;
   for(unsigned int i=0; i < iterations; ++i){
     if(!(i % div)) Rprintf("-");
   }

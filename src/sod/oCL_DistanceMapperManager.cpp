@@ -3,6 +3,7 @@
 #include "oCL_DistanceMapper.h"
 #include <iostream>
 #include <sstream>
+#include <Rcpp.h>
 
 
 OCL_DistanceMapperManager::OCL_DistanceMapperManager(unsigned int node_no, unsigned int dim_no, float* nodes, float* node_dist)
@@ -24,14 +25,14 @@ OCL_DistanceMapperManager::OCL_DistanceMapperManager(node_set* pos, node_set* di
   dimensionality = pos->n_dim();
   mapper = 0;
   if(!node_no || !dimensionality){
-    std::cerr << "OCL_DistanceMapperManager empty positions " 
-	      << pos->n_size() << " * " << pos->n_dim() << std::endl;
+    Rprintf("OCL_DistanceMapperManager empty positions %d * %d\n", 
+	    pos->n_size(), pos->n_dim());
     return;
   }
   
   if(dist->n_size() != node_no || dist->n_dim() != (node_no)){
-    std::cerr << "OCL_DistanceMapperManager dist has unsuitable dimensions " 
-	      << "node_no: " << node_no << "  dist_dim " << dist->n_dim() << std::endl;
+    Rprintf("OCL_DistanceMapperManager dist has unsuitable dimensions node_no %d dist_dim %d\n",
+	    node_no, dist->n_dim());
     return;
   }
   
@@ -52,9 +53,10 @@ OCL_DistanceMapperManager::OCL_DistanceMapperManager(node_set* pos, node_set* di
 
 OCL_DistanceMapperManager::~OCL_DistanceMapperManager()
 {
+  Rprintf("OCL_DistanceMapperManager destructor invoked\n");
   delete mapper;
-  delete []nodes;
-  delete []node_distances;
+  //delete []nodes;
+  //delete []node_distances; // these are deleted by the parent
 }
 
 
@@ -71,8 +73,8 @@ MappingInfo OCL_DistanceMapperManager::reduce_dimensions(unsigned int iter_no, u
 
 void OCL_DistanceMapperManager::print_pointers()
 {
-  std::cout << "nodes:          " << nodes << std::endl;
-  std::cout << "node_distances: " << node_distances << std::endl;
+  Rprintf("nodes: %p\n", nodes);
+  Rprintf("node_distances: %p\n", node_distances);
 }
 
 std::string OCL_DistanceMapperManager::cl_define_statement()

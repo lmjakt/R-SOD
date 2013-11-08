@@ -15,6 +15,10 @@ struct stressInfo {
     dimNo = activeDimNo = 0;
     stress = 0;
   }
+  stressInfo(std::vector<float> df, float str)
+  : dimNo(df.size()), activeDimNo(df.size()), dimFactors(df), stress(str)
+  {
+  }
   void setStress(int dim_no, float* df, unsigned int ad, float s){
     dimNo = dim_no;
     activeDimNo = ad;

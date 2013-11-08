@@ -34,6 +34,11 @@ DistanceMapper::~DistanceMapper()
 
 MappingInfo DistanceMapper::reduce_dimensions(unsigned int iter_no, unsigned int target_dim)
 {
+  MappingInfo dummyInfo;
+  if(dimension_no < 2){
+    Rprintf("Starting dimensionality is 1. This is pointless\n");
+    return(dummyInfo);
+  }
   if(target_dim < dimension_no){
     target_dimensionality = target_dim;
   }else{
@@ -41,33 +46,83 @@ MappingInfo DistanceMapper::reduce_dimensions(unsigned int iter_no, unsigned int
 	    target_dim, dimension_no);
     target_dimensionality = 2;
   }
+  if(iter_no < 1){
+    Rprintf("Error: reduce_dimensions requested 0 iterations\n");
+    return(dummyInfo);
+  }
+  dimFactors.assign(dimension_no, 1.0);
+  std::vector<std::vector<float> > dimFactorVector(iter_no);
+  // This is a bit stupid, and should be changed // 
+  for(unsigned int i=0; i < dimFactorVector.size(); ++i){
+    shrinkDimensionality(iter_no);
+    dimFactorVector[i] = dimFactors;
+  }
+  return(reduce_dimensions(dimFactorVector));
+}
+
+MappingInfo DistanceMapper::reduce_dimensions(std::vector<std::vector<float> >& dimFactorVector)
+{
   
   MappingInfo dummyInfo;
   if(!nodes || !node_distances || !forceVectors || !mappedNodes)
     return(dummyInfo);
-  std::vector<stressInfo> stress_data(iter_no);
-  dimFactors.assign(dimension_no, 1.0);
+  // we have to verify that the dimFactorVector is reasonable
+  // Each sub vector should be of dimensionality length and
+  // each value should be between 1 and 0, though actually
+  // one might be able to create interesting effects by using
+  // different values.
+  if(dimFactorVector.size() == 0){
+    Rprintf("Error: reduce_dimensions no iterations specified\n");
+    return(dummyInfo);
+  }
+  for(unsigned int i=0; i < dimFactorVector.size(); ++i){
+    if(dimFactorVector[i].size() != dimension_no){
+      Rprintf("Incorrect DimFactorVector specified iteration %d has %d dimensions\n",
+	      i, dimFactorVector[i].size());
+      Rprintf("Using default dimension strategy\n");
+      return( reduce_dimensions(dimFactorVector.size(), 2) ); // potential infinite loop
+    }
+  }
 
-    
-  Rprintf("Starting the squeeze\n");
+  unsigned int iter_no = dimFactorVector.size();
+  std::vector<stressInfo> stress_data(iter_no);
+
+  // make sure that the mappedNodes are set to the original ones.
+  // This should be optional, as we may want to keep the nodes for a longer time.
+  memcpy((void*)mappedNodes, (void*)nodes, sizeof(float) * node_no * dimension_no);
+  
+  Rprintf("Squeezing\n");
   // Let's print out 80 colums to indicate progress
   unsigned int columns = 80;
   unsigned int div = (iter_no / columns);
+  div = (div == 0) ? 1 : div;
   for(unsigned int i=0; i < iter_no; ++i){
     if(!(i % div)) Rprintf("-");
   }
   Rprintf("|\n");
-
+  
   for(unsigned int i=0; i < iter_no; ++i){
     // progress bar
     if(!(i % div))
       Rprintf("=");
-
+    dimFactors = dimFactorVector[i];  // this is a hack to allow setting of dimFactors
     float stress = adjustForces();
     stress_data[i].setStress(dimFactors, stress);
     
     moveNodes();
-    shrinkDimensionality(iter_no);
+  }
+  Rprintf("\n");
+  // Reduce stress while it is decreasing, or we reach a max iteration no.
+  float last_stress = stress_data.back().stress;
+  bool remove_residual_stress = true;
+  while(remove_residual_stress && stress_data.size() < (3 * iter_no)){
+    Rprintf(".");
+    float stress = adjustForces();
+    moveNodes();
+    //    Rprintf("%f\t%f\n", last_stress, stress);
+    stress_data.push_back( stressInfo(dimFactors, stress) );
+    remove_residual_stress = (stress < last_stress);
+    last_stress = stress;
   }
   Rprintf("\n");
 

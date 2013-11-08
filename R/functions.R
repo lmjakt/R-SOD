@@ -36,6 +36,23 @@ plot.points <- function(sq, col=hsv.scale(sq$node_stress), x=1, y=2, cex=1,
     plot(xv, yv, col=col, cex=cex, bg=col, pch=pch, xlab=xlab, ylab=ylab)
 }
 
+plot.concentric <- function(sq, cex.data, cols=hsv.scale(1:ncol(cex.data)), x=1, y=2, cex.max=3, invert.y=FALSE, pch=1, xlab=NA, ylab=NA){
+    xv <- sq$pos[,x]
+    yv <- sq$pos[,y]
+    if(invert.y)
+        yv <- -yv
+    p.cex <- matrix(nrow=nrow(cex.data), ncol=ncol(cex.data), data=0)
+    p.cex[,ncol(cex.data)] <- sqrt(cex.data[,ncol(cex.data)])
+    for(i in (ncol(cex.data)-1):1){
+        p.cex[,i] <- p.cex[,(i+1)] + sqrt(cex.data[,i])
+    }
+    ## scale to cex.max
+    p.cex <- cex.max * p.cex / max(p.cex)
+    plot(xv, yv, type='n', xlab=xlab, ylab=ylab)
+    for(i in 1:ncol(p.cex))
+        points(xv, yv, cex=p.cex[,i], col=cols[i], bg=cols[i], pch=pch)
+}
+
 plot.stress <- function(sq, bg.alpha=0.5, bg.sat=1, bg.val=0.75,
                         col='black', lwd=1, lty=1, main="Error / Dimension",
                         xlab="iteration", ylab="error / dimensionality"){
@@ -59,3 +76,31 @@ plot.stress <- function(sq, bg.alpha=0.5, bg.sat=1, bg.val=0.75,
     polygon( c(1, x.pts, max.x), c(y.range[1], d, y.range[1]), col=bg.cols[1], border=NA )
     points(x.pts, sq$stress, type='l', lwd=lwd, col=col, lty=lty)
 }
+
+parallel.dim.factors <- function(dim, iteration.no, red.end=iteration.no*0.75, target.dim=2){
+    dimFactors <- matrix(nrow=iteration.no, ncol=dim, data=1.0)
+    dimFactors[1:red.end, (target.dim+1):ncol(dimFactors) ] <- seq(from=1.0, to=0.0, length.out=red.end)
+    dimFactors[(red.end+1):nrow(dimFactors), (target.dim+1):ncol(dimFactors) ] <- 0
+    dimFactors
+}
+
+parallel.exp.dim.factors <- function(dim, iteration.no, target.dim=2, red.end=iteration.no * 0.9){
+    dimFactors <- matrix(nrow=iteration.no, ncol=dim, data=1.0)
+    dimFactors[1:red.end, (target.dim+1):ncol(dimFactors) ] <- 2^( -seq(from=0, to=10, length.out=(red.end)) )
+    dimFactors[(red.end+1):nrow(dimFactors), (target.dim+1):ncol(dimFactors) ] <- 0
+    dimFactors
+}
+
+serial.dim.factors <- function(dim, iteration.no, red.end=iteration.no*0.75, target.dim=2){
+    dimFactors <- matrix(nrow=iteration.no, ncol=dim, data=1.0)
+    d.l <- as.integer(red.end / (dim - target.dim))
+    red.i <- 1
+    for(i in (dim):(target.dim+1)){
+        dimFactors[red.i:(red.i+d.l-1), i] <- seq(from=1.0, to=0, length.out=d.l)
+        dimFactors[(red.i+d.l):nrow(dimFactors), i] <- 0
+        red.i <- red.i + d.l
+    }
+    dimFactors
+}
+
+
