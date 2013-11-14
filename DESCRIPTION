@@ -1,12 +1,12 @@
 Package: SOD
 Type: Package
-Title: What the package does (short line)
+Title: SOD for multidimensional scaling.
 Version: 1.0
 Date: 2013-10-10
 Author: Martin Jakt
 Maintainer: Martin Jakt <mjakt@z2.keio.jp>
-Description: More about what it does (maybe more than one line)
-License: GPLv2
+Description: Provides multidimensional scaling by gradually reducing the dimensionality and using the resulting stress to re-arrange nodes in N-dimensional space. Stress is calculated from the errors in the inter-node distances, and the sum of the stresses at each node is combined to create N-dimensional force vectors that direct the movement of nodes as the dimensionality is reduced to the desired number of dimensions in an iterative manner.
+License: GPL-2
 Depends: methods, Rcpp (>= 0.10.5)
 LinkingTo: Rcpp
-RcppModules: yada, stdVector, NumEx, mod_R_DimSqueezer
+RcppModules: mod_R_DimSqueezer

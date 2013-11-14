@@ -29,10 +29,11 @@ Package: \tab SOD\cr
 Type: \tab Package\cr
 Version: \tab 1.0\cr
 Date: \tab 2013-10-10\cr
-License: \tab GPLv2\cr
+License: \tab GPL-2\cr
 }
-~~ An overview of how to use the package, including the most important ~~
-~~ functions ~~
+The basic functions are accessed from DimSqueezer objects which are created using the new function by providing the positions of nodes in N-dimensional space. \code{ds <- new(R_DimSqueezer, data)} The resulting object can be used to repeat the mapping using different variations of the theme.
+Functions are also provided to specify the manner in which dimensionality is reduced \code{parallel.dim.factors()}, \code{parallel.exp.dim.factors()}, and others.   
+
 }
 \author{
 Martin Jakt
@@ -42,8 +43,8 @@ Maintainer: Martin Jakt <mjakt@z2.keio.jp>
 \references{
 ~~ Literature or other references for background information ~~
 }
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in ~~
-~~ the R documentation directory ~~
+%%~~ Optionally other standard keywords, one per line, from file KEYWORDS in ~~
+%%~~ the R documentation directory ~~
 \keyword{ package }
 \seealso{
 ~~ Optional links to other man pages, e.g. ~~

@@ -1,5 +1,6 @@
 ##
 ## A set of functions that are useful for visualsing squeezed data ##
+loadModule("mod_R_DimSqueezer", TRUE)
 
 ## makes a color for each of level of v 
 hsv.scale <- function(v, sat=1, val=0.75, alpha=1.0){

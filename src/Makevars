@@ -45,12 +45,7 @@ SOURCES = 	sod/oCL_DistanceMapper.cpp \
 		sod/node_set.cpp \
 		sod/open_cl/oCL_base.cpp \
 		sod/open_cl/clError.cpp \
-		sod/DistanceMapper.cpp \
-		Num.cpp \
-		RcppExports.cpp \
-		rcpp_hello_world.cpp \
-		rcpp_module.cpp \
-		stdVector.cpp
+		sod/DistanceMapper.cpp 
 
 OBJECTS =	sod/oCL_DistanceMapper.o \
 		sod/oCL_DistanceMapperManager.o \
@@ -58,12 +53,7 @@ OBJECTS =	sod/oCL_DistanceMapper.o \
 		sod/node_set.o \
 		sod/open_cl/oCL_base.o \
 		sod/open_cl/clError.o \
-		sod/DistanceMapper.o \
-		Num.o \
-		RcppExports.o \
-		rcpp_hello_world.o \
-		rcpp_module.o \
-		stdVector.o
+		sod/DistanceMapper.o 
 
 ## in order to get it to actually compile everything we need to do:
 
