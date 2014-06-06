@@ -5,6 +5,7 @@
 #include <sstream>
 #include <Rcpp.h>
 
+typedef unsigned int uint;
 
 OCL_DistanceMapperManager::OCL_DistanceMapperManager(unsigned int node_no, unsigned int dim_no, float* nodes, float* node_dist)
   : node_no(node_no), dimensionality(dim_no), nodes(nodes), node_distances(node_dist)

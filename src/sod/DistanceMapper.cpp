@@ -203,6 +203,6 @@ void DistanceMapper::moveNodes()
 void DistanceMapper::shrinkDimensionality(unsigned int iter_no)
 {
   float r_factor = (1.0 / 0.9) / (float)iter_no;
-  for(uint i=target_dimensionality; i < dimension_no; ++i)
+  for(unsigned int i=target_dimensionality; i < dimension_no; ++i)
     dimFactors[i] = (dimFactors[i] - r_factor) < 0 ? 0 : (dimFactors[i] - r_factor);
 }
