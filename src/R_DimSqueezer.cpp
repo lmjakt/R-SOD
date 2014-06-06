@@ -137,6 +137,7 @@ void R_DimSqueezer::useOpenMP(bool use_openMP)
 }
 
 ////////////// openCL based Distance mapper  ////////////////////
+#ifdef HAVE_CL
 R_CL_DimSqueezer::R_CL_DimSqueezer(Rcpp::NumericMatrix r_positions)
 {
   positions = 0;
@@ -178,3 +179,4 @@ Rcpp::List R_CL_DimSqueezer::squeeze(unsigned int target_dimensionality, unsigne
   delete []mapInfo.mapped_points;
   return(return_data);
 }
+#endif

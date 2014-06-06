@@ -3,9 +3,10 @@
 
 #include <Rcpp.h>
 #include <string>
-//#include <math.h>
-#include "sod/oCL_DistanceMapperManager.h"  // not necessary if we use a pointer
 #include "sod/DistanceMapper.h"
+#ifdef HAVE_CL
+#include "sod/oCL_DistanceMapperManager.h"  // not necessary if we use a pointer
+#endif
 
 // It seems that this _has_ to be here.
 // I could not get away with using it within the RCPP_MODULE part
@@ -33,6 +34,7 @@ class R_DimSqueezer {
 
 // openCL based squeezer
 // This really ought to be done using inheritance, but .. 
+#ifdef HAVE_CL
 class R_CL_DimSqueezer {
  public:
   R_CL_DimSqueezer(NumericMatrix r_positions);
@@ -48,7 +50,7 @@ class R_CL_DimSqueezer {
   unsigned int dimension_no;
   unsigned int node_no;
 };
-
+#endif
 
 RCPP_MODULE(mod_R_DimSqueezer) {
   class_<R_DimSqueezer>("R_DimSqueezer")
@@ -57,11 +59,12 @@ RCPP_MODULE(mod_R_DimSqueezer) {
     .method("squeezeDF", &R_DimSqueezer::squeezeDF)
     .method("useOpenMP", &R_DimSqueezer::useOpenMP)
     ;
-
+#ifdef HAVE_CL
   class_<R_CL_DimSqueezer>("R_CL_DimSqueezer")
     .constructor<NumericMatrix>()
     .method("squeeze", &R_CL_DimSqueezer::squeeze)
     ;
+#endif
 };
 
 #endif

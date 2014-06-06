@@ -29,12 +29,12 @@ hsv.scale <- function(v, sat=1, val=0.75, alpha=1.0){
 
 ## sq squeezed data
 plot.points <- function(sq, col=hsv.scale(sq$node_stress), x=1, y=2, cex=1,
-                        invert.y=FALSE, pch=1, xlab=NA, ylab=NA){
+                        invert.y=FALSE, pch=1, xlab=NA, ylab=NA, ...){
     xv = sq$pos[,x]
     yv = sq$pos[,y]
     if(invert.y)
         yv = -yv
-    plot(xv, yv, col=col, cex=cex, bg=col, pch=pch, xlab=xlab, ylab=ylab)
+    plot(xv, yv, col=col, cex=cex, bg=col, pch=pch, xlab=xlab, ylab=ylab, ...)
 }
 
 plot.concentric <- function(sq, cex.data, cols=hsv.scale(1:ncol(cex.data)), x=1, y=2, cex.max=3, invert.y=FALSE, pch=1, xlab=NA, ylab=NA){

@@ -1,0 +1,27 @@
+## Use autoconf, configure to find appropriate variable values
+
+PKG_CPPFLAGS = @SOD_CPPFLAGS@
+
+PKG_CXXFLAGS = -fopenmp @SOD_CXXFLAGS@ ## without debugging add -g for debug
+
+PKG_LIBS = $(RCPP_LDFLAGS) @SOD_PKG_LIBS@
+
+## There should be some way of avoiding specifying all of these
+## files here (autoconf can probably handle it, but for now
+## this works, and is at least conceptuallly simple)
+##
+## Note however, that the whitespace seems to make a 
+## big difference so there is some care needed in specifying
+## the files.
+	
+HEADERS =	@SOD_HEADERS@
+
+SOURCES =	@SOD_SOURCES@
+
+OBJECTS =	@SOD_OBJECTS@
+
+all: $(SHLIB)
+
+clean:
+	@rm -f $(OBJECTS)
+
