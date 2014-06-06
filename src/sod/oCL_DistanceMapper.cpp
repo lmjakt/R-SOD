@@ -15,6 +15,8 @@
 const char* const kernel_source = "move_deltoids_2"; 
 const char* const kernel_name = "move_deltoids";
 
+typedef unsigned int uint;
+
 OCL_DistanceMapper::OCL_DistanceMapper(std::string def_statement)
   : OCL_base(kernel_source, kernel_name, def_statement, true)
 {

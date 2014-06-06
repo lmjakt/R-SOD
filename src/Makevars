@@ -4,7 +4,7 @@ PKG_CPPFLAGS = -I/usr/local/include
 
 PKG_CXXFLAGS = -fopenmp -DHAVE_CL ## without debugging add -g for debug
 
-PKG_LIBS = $(RCPP_LDFLAGS)  -lOpenCL
+PKG_LIBS = $(RCPP_LDFLAGS)  -lOpenCL -fopenmp
 
 ## There should be some way of avoiding specifying all of these
 ## files here (autoconf can probably handle it, but for now
