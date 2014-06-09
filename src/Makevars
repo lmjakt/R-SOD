@@ -3,9 +3,9 @@
 PKG_CPPFLAGS = -I/usr/local/include
 
 ##PKG_CFLAGS = -fopenmp
-PKG_CXXFLAGS = -fopenmp  ## without debugging add -g for debug
+PKG_CXXFLAGS = -fopenmp -DHAVE_CL ## without debugging add -g for debug
 
-PKG_LIBS = $(RCPP_LDFLAGS)  -fopenmp
+PKG_LIBS = $(RCPP_LDFLAGS)  -framework OpenCL -fopenmp
 
 ## There should be some way of avoiding specifying all of these
 ## files here (autoconf can probably handle it, but for now
@@ -15,11 +15,11 @@ PKG_LIBS = $(RCPP_LDFLAGS)  -fopenmp
 ## big difference so there is some care needed in specifying
 ## the files.
 	
-HEADERS =	R_DimSqueezer.h sod/node_set.h sod/stressInfo.h sod/mappingInfo.h sod/DistanceMapper.h
+HEADERS =	R_DimSqueezer.h sod/node_set.h sod/stressInfo.h sod/mappingInfo.h sod/DistanceMapper.h sod/oCL_DistanceMapper.h sod/oCL_DistanceMapperManager.h sod/open_cl/oCL_base.h sod/open_cl/clError.h sod/oCL_Kernels/oCL_Kernels.h
 
-SOURCES =	R_DimSqueezer.cpp sod/node_set.cpp sod/DistanceMapper.cpp
+SOURCES =	R_DimSqueezer.cpp sod/node_set.cpp sod/DistanceMapper.cpp sod/oCL_DistanceMapper.cpp sod/oCL_DistanceMapperManager.cpp sod/open_cl/oCL_base.cpp sod/open_cl/clError.cpp
 
-OBJECTS =	R_DimSqueezer.o sod/node_set.o sod/DistanceMapper.o
+OBJECTS =	R_DimSqueezer.o sod/node_set.o sod/DistanceMapper.o sod/oCL_DistanceMapper.o sod/oCL_DistanceMapperManager.o sod/open_cl/oCL_base.o sod/open_cl/clError.o
 
 all: $(SHLIB)
 
