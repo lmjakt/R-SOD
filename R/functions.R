@@ -1,43 +1,38 @@
 ##
-## A set of functions that are useful for visualsing squeezed data ##
+## A set of functions that are useful for visualising squeezed data ##
 loadModule("mod_R_DimSqueezer", TRUE)
 
-## makes a color for each of level of v 
-hsv.scale <- function(v, sat=1, val=0.75, alpha=1.0){
-    cols <- v - min(v);
-    max.c <- max(cols)
-    ## hue of 0.6665 = blue
-    ## hue of 1 = 0 = red
-    ## hue of 0.8331 = purple
-    
-    ## a reasonable range may run from blue -> purple, but avoiding the purple -> red transition
-    ## giving us a total rango of
-    
-    ## blue -> red (0.6665), red -> purple (1 - 0.8331 = 0.1669 )
-    ## total range  of 0.8334
-    
-    ## consider full circle as 10,000 then we can simply do something like
-    cols <- 8334 * (cols/max.c);
-    cols <- 6665 - cols
-    cols[ cols < 0 ] <- 10000 + cols[ cols < 0 ] ## very ugly.
-    cols <- cols / 10000
-    cols.v <- vector(length=length(cols))
-    for( i in 1:length(cols))
-        cols.v[i] <- hsv( cols[i], sat, val, alpha )
-    cols.v
+## makes a color for each of level of v
+## with low (blue) to high (purple) via, cyan, green, yellow, red.
+## this can also be done by reordering the
+## output of the rainbow function.
+## but not sure how to get the radial shift.
+hsv.scale <- function(v, sat=1, val=0.75, alpha=1, min.v=min(v), max.v=max(v)){
+  ## run from blue (4/6) -> magenta (5/6)
+  v.range <- max.v - min.v
+  if(!v.range)
+    return(rep(hsv(4/6), length(v)))
+  v <- 5 + 5 * (min.v - v) / v.range
+  ## now runs from 5 (magenta) -> 0 (red)
+  ## convert to 4, 3, 2, 1, 0, 5
+  v <- (v - 1) ## and now runs 4, 3, 2, 1, 0, -1
+  v[ v < 0 ] <- 6 + v[ v < 0 ] ## -> 4, 3, 2, 1, 0, 5
+  hsv( v/6, sat, val, alpha )
 }
 
+
 ## sq squeezed data
-plot.points <- function(sq, col=hsv.scale(sq$node_stress), x=1, y=2, cex=1,
-                        invert.y=FALSE, pch=1, xlab=NA, ylab=NA, ...){
+plt.points <- function(sq, col=hsv.scale(sq$node_stress), x=1, y=2,
+                        invert.y=FALSE, xlab=NA, ylab=NA, ...){
     xv = sq$pos[,x]
     yv = sq$pos[,y]
     if(invert.y)
         yv = -yv
-    plot(xv, yv, col=col, cex=cex, bg=col, pch=pch, xlab=xlab, ylab=ylab, ...)
+    plot(xv, yv, col=col, bg=col, xlab=xlab, ylab=ylab, ...)
 }
 
-plot.concentric <- function(sq, cex.data, cols=hsv.scale(1:ncol(cex.data)), x=1, y=2, cex.max=3, invert.y=FALSE, pch=1, xlab=NA, ylab=NA){
+plt.concentric <- function(sq, cex.data, col=hsv.scale(1:ncol(cex.data)),
+                            x=1, y=2, cex.max=3, invert.y=FALSE, pch=19, xlab=NA, ylab=NA, leg.pos=NULL, ...){
     xv <- sq$pos[,x]
     yv <- sq$pos[,y]
     if(invert.y)
@@ -49,12 +44,16 @@ plot.concentric <- function(sq, cex.data, cols=hsv.scale(1:ncol(cex.data)), x=1,
     }
     ## scale to cex.max
     p.cex <- cex.max * p.cex / max(p.cex)
-    plot(xv, yv, type='n', xlab=xlab, ylab=ylab)
+    plot(xv, yv, type='n', xlab=xlab, ylab=ylab, ...)
     for(i in 1:ncol(p.cex))
-        points(xv, yv, cex=p.cex[,i], col=cols[i], bg=cols[i], pch=pch)
+        points(xv, yv, cex=p.cex[,i], col=col[i], bg=col[i], pch=pch)
+
+    if(!is.null(leg.pos)){
+        legend(leg.pos, legend=colnames(cex.data), col=col, pch=pch)
+    }
 }
 
-plot.stress <- function(sq, bg.alpha=0.5, bg.sat=1, bg.val=0.75,
+plt.stress <- function(sq, bg.alpha=0.5, bg.sat=1, bg.val=0.75,
                         col='black', lwd=1, lty=1, main="Error / Dimension",
                         xlab="iteration", ylab="error / dimensionality"){
     bg.cols <- hsv.scale(1:ncol(sq$mapDims), alpha=bg.alpha, sat=bg.sat, val=bg.val)

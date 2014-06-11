@@ -2,8 +2,8 @@
 #include "open_cl/oCL_base.h"
 #include "open_cl/clError.h"
 #include <string.h>
-#include <fstream>
-#include <iostream>
+//#include <fstream>
+//#include <iostream>
 #include <Rcpp.h>  // included for Rprintf and other standard methods.
 
 // need to change these hardcoded paths into softcoded ones ? ?
@@ -79,8 +79,8 @@ MappingInfo OCL_DistanceMapper::reduce_dimensions(float* points, unsigned int no
   while(global_item_size < node_no)
     global_item_size += local_item_size;
   
-  std::cout << "local item size is : " << local_item_size << "\n"
-	    << "global item size is: " << global_item_size << std::endl;
+  Rprintf("local item size is: %d\nglobal item size is: %d\n",
+	  local_item_size, global_item_size);
 
   // if we want to make use of reasonable calls to async_work_group_copy
   // we need to make sure that the data itself aligns to multiples of 
@@ -242,9 +242,12 @@ MappingInfo OCL_DistanceMapper::reduce_dimensions(float* points, unsigned int no
     
   // let's write a table of positions that we can plot with R or something
   // Keep the below for troubleshooting purposes.  
+  // R packages should not write out anything. And this is a good example
+  // of something useless. Comment out pending deletion
+  /*
   std::ofstream out("oCL_DM_positions.txt");
   if(!out){
-    std::cerr << "oCL_DistanceMapper unable to open a file to stick numbers in" << std::endl;
+    Rprintf("oCL_DistanceMapper unable to open a file to stick numbers in\n");
   }else{
     for(uint i=0; i < node_no; ++i){
       out << i;
@@ -254,7 +257,7 @@ MappingInfo OCL_DistanceMapper::reduce_dimensions(float* points, unsigned int no
     }
     out.close();
   }
-  
+  */
   // Let's convert the stress values to a vector of floats
   std::vector<float> node_stress(node_no);
   node_stress.assign( stress, stress+node_no );
@@ -276,12 +279,6 @@ MappingInfo OCL_DistanceMapper::reduce_dimensions(float* points, unsigned int no
   Rprintf("Loop mem enque time %f\n", (float)loop_mem_que_time / 1e9);
   Rprintf("Kernel time         %f\n", (float)kernel_time / 1e9);
   Rprintf("Mem read time       %f\n", (float)mem_read_time / 1e9);
-
-  //std::cout << "Timing data in s" << std::endl;
-  //std::cout << "Pre mem enque time : " << pre_mem_enque_time / 1e9 << "\n"
-  //          << "Loop mem enque time: " << loop_mem_que_time / 1e9 << "\n"
-  //	      << "Kernel time        : " << kernel_time / 1e9 << "\n"
-  //          << "Mem read time      : " << mem_read_time / 1e9 << "\n";
 
   return( MappingInfo(node_no, dimensionality, points_i, stress_data, time_data, node_stress) );
 }

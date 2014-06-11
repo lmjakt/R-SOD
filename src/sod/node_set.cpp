@@ -1,6 +1,7 @@
 #include "node_set.h"
-#include <iostream>
+//#include <iostream>
 #include <math.h>
+#include <Rcpp.h>
 
 node_set::node_set()
   : dimensions(0)
@@ -58,8 +59,8 @@ float node_set::e_distance(std::vector<float>& a, std::vector<float>& b)
 {
   float d = 0;
   if(a.size() != b.size()){
-    std::cerr << "node_set::e_distance a and b have different sizes, calculating partial distance" 
-	      << a.size() << " != " << b.size() << std::endl;
+    Rprintf("node_set::e_distance a and b have different sizes, calculating partial distance %d != %d\n",
+	    a.size(), b.size());
   }
   unsigned int k = a.size() < b.size() ? a.size() : b.size();
   for(unsigned int i=0; i < k; ++i)

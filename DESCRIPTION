@@ -4,9 +4,10 @@ Title: SOD for multidimensional scaling.
 Version: 1.0
 Date: 2013-10-10
 Author: Martin Jakt
-Maintainer: Martin Jakt <mjakt@z2.keio.jp>
+Maintainer: "Martin Jakt" <lmjakt@gmail.com>
 Description: Provides multidimensional scaling by gradually reducing the dimensionality and using the resulting stress to re-arrange nodes in N-dimensional space. Stress is calculated from the errors in the inter-node distances, and the sum of the stresses at each node is combined to create N-dimensional force vectors that direct the movement of nodes as the dimensionality is reduced to the desired number of dimensions in an iterative manner.
 License: GPL-2
 Depends: methods, Rcpp (>= 0.10.5)
 LinkingTo: Rcpp
 RcppModules: mod_R_DimSqueezer
+NeedsCompilation: yes

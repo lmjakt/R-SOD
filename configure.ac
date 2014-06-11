@@ -24,11 +24,6 @@ CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
 CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 PKG_LIBS=`${R_HOME}/bin/Rscript -e 'Rcpp:::LdFlags()'` 
 
-dnl The simplest way may be to simply have two different templates
-dnl and then to simply rename the correct ones having inserted the
-dnl correct variables. Not elegant, but, better than having ifdefs
-dnl all over the source code.
-
 dnl Determine if we have openCL installed somewhere
 dnl CL/cl.h on Linux, OpenCL/opencl.h on MacOS
 
@@ -45,8 +40,9 @@ fi
 dnl We should also check for the library
 dnl but the way we do this varies from OS to OS
 
-if test $host_os = Linux; then
-   echo "Host is Linux checking for shared OpenCL libraries"
+# if host is not Darwin assume it is Linux
+if test $host_os != Darwin; then
+   echo "Host is not Darwin, assuming Linux: checking for shared OpenCL libraries"
    AC_CHECK_LIB(OpenCL, clGetDeviceInfo)
 
    if test "$ac_cv_lib_OpenCL_clGetDeviceInfo" = no; then

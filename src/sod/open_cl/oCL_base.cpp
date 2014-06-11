@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <string.h>
+#include <Rcpp.h>
 
 const unsigned int default_local_item_size = 128;
 
@@ -50,7 +51,7 @@ OCL_base::~OCL_base()
   // we should naturally check this, but for first implementation
   // let's try without.
 
-  std::cout << "OCL_base destructor ? incurred here" << std::endl;
+  Rprintf("OCL_base destructor ? incurred here\n");
 
   clFlush(command_que);
   clFinish(command_que);
@@ -87,18 +88,23 @@ void OCL_base::device_properties()
   cl_ulong device_max_constant_buffer_size = 0;
   ret = clGetDeviceInfo(device_id, CL_DEVICE_MAX_CONSTANT_BUFFER_SIZE, sizeof(cl_ulong), &device_max_constant_buffer_size, NULL);
 
+  Rprintf("Device properties:\nMax compute units\t%d\nMax work group\t%d\nGlobal memory\t%d\nMax_constant\t%d\nLocal memory\t%d\n",
+	  compute_unit_no, device_max_work_group_size, global_mem_size, 
+	  device_max_constant_buffer_size, local_mem_size);
+    /*
   std::cout << "Device properties:" << std::endl
 	    << "Max compute units: " << compute_unit_no << std::endl
 	    << "Max work group   : " << device_max_work_group_size << std::endl
 	    << "Global memory    : " << global_mem_size << std::endl
 	    << "Max_constant     : " << device_max_constant_buffer_size << std::endl
-	    << "Local memory     : " << local_mem_size << std::endl;
+    	    << "Local memory     : " << local_mem_size << std::endl;
+    */
 }
 
 void OCL_base::kernel_properties()
 {
   if(!device_id || !kernel){
-    std::cerr << "kernel_properties: no known kernel or device" << std::endl;
+    Rprintf("kernel_properties: no known kernel or device\n");
     return;
   }
   //size_t global_work_size[3];
@@ -118,6 +124,7 @@ void OCL_base::kernel_properties()
 			   sizeof(preferred_work_group_size_multiple), &preferred_work_group_size_multiple, NULL);
   clGetKernelWorkGroupInfo(kernel, device_id, CL_KERNEL_PRIVATE_MEM_SIZE, sizeof(private_mem_size), &private_mem_size, NULL);
 
+  /*
   std::cout << "Kernel properties:\n"
     //	    << "KERNEL_GLOBAL_WORK_SIZE            : " << global_work_size[0] << " : " 
     //	    << global_work_size[1] << " : " << global_work_size[2] << "\n"
@@ -127,6 +134,15 @@ void OCL_base::kernel_properties()
 	    << "KERNEL_LOCAL_MEM_SIZE              : " << local_mem_size << "\n"
 	    << "PREFERRED_WORK_GROUP_SIZE_MULTIPLE : " << preferred_work_group_size_multiple << "\n"
 	    << "KERNEL_PRIVATE_MEM_SIZE            : " << private_mem_size << std::endl;
+  */
+  // Here I do rather wish that I could use the std::cout
+  Rprintf("Kernel properties:\n");
+  Rprintf("KERNEL_WORK_GROUP_SIZE\t%d\n", work_group_size);
+  Rprintf("KERNEL_COMPILE_WORK_GROUP_SIZE\t%d\t%d\t%d\n", 
+	  compile_work_group_size[0], compile_work_group_size[1], compile_work_group_size[2]);
+  Rprintf("KERNEL_LOCAL_MEM_SIZE\t%d\n", local_mem_size);
+  Rprintf("PREFERRED_WORK_GROUP_SIZE_MULTIPLE\t%d\n", preferred_work_group_size_multiple);
+  Rprintf("KERNEL_PRIVATE_MEM_SIZE\t%d\n", private_mem_size);
 
 }
 
@@ -145,7 +161,7 @@ void OCL_base::init_kernel(const char* kernel_source, const char* kernel_name,
 			   std::string define_statements, bool compile_source)
 {
   if(!compile_source){
-    std::cerr << "Binary sources not supported yet" << std::endl;
+    Rprintf("Binary sources not supported yet\n");
     return;
   }  
 
@@ -168,15 +184,15 @@ void OCL_base::init_kernel(const char* kernel_source, const char* kernel_name,
   if(!kernel_buffer){
     std::ifstream in(kernel_source, std::ios::binary);
     if(!in){
-      std::cerr << "Unable to open kernel source file" << std::endl;
+      Rprintf("Unable to open kernel source file\n");
       return;
     }
     in.seekg(0, std::ios::end);
     ssize_t end_pos = in.tellg();
-    std::cout << "in.tellg() reports : " << in.tellg() << std::endl;
+    Rprintf("in.tellg() reports : %d\n", in.tellg());
     in.seekg(0, std::ios::beg);
     if(!end_pos){
-      std::cerr << "Unable to read from kernel source file" << std::endl;
+      Rprintf("Unable to read from kernel source file\n");
       return;
     }
     // prepend #define statements to the kernal source.
@@ -189,7 +205,7 @@ void OCL_base::init_kernel(const char* kernel_source, const char* kernel_name,
     
     size_t copied_bytes = define_statements.copy(kernel_buffer, define_statements.size());
     if(copied_bytes != define_statements.size()){
-      std::cerr << "Unable to copy the full define statements" << std::endl;
+      Rprintf("Unable to copy the full define statements\n");
       delete []kernel_buffer;
       return;
     }
@@ -198,7 +214,8 @@ void OCL_base::init_kernel(const char* kernel_source, const char* kernel_name,
 
     in.read((kernel_buffer + 1 + define_statements.size()), end_pos);
     if(in.gcount() != end_pos){
-      std::cerr << "Unable to read to end of kernel source file: " << end_pos << " != " << in.gcount() << std::endl;
+      Rprintf("Unable to read to end of kernel source file: %d != %d\n",
+	      end_pos, in.gcount());
       delete []kernel_buffer;
       return;
     }
@@ -214,7 +231,7 @@ void OCL_base::init_kernel(const char* kernel_source, const char* kernel_name,
 			&device_id, &num_devices );
   if(ret) report_error_pf("clGetDeviceIDs", ret);
   if(ret != CL_SUCCESS){
-    std::cerr << "clGetDevice returned with error: " << (int)ret << std::endl;
+    Rprintf("clGetDevice returned with error: %d\n", (int)ret);
     return;
   }
 
@@ -241,10 +258,10 @@ void OCL_base::init_kernel(const char* kernel_source, const char* kernel_name,
   report_error_pf("clGetProgramBuildInfo", ret);
   
   // the below doesn't make much sense. But log_size is never 0, so, need to do something
-  std::cout << "After building the kernel the log size is : " << log_size << std::endl;
+  Rprintf("After building the kernel the log size is : %d\n", log_size);
   if(log_size > 2){
-    std::cerr << "clBuildProgram Error encountered:\n" << build_log;
-    std::cerr << ".....\n" << kernel_buffer << "\n....." << std::endl;
+    Rprintf("clBuildProgram Error encountered:\n%s\n", build_log);
+    Rprintf(".....\n%s\n....\n", kernel_buffer);
   }
   delete []build_log;
 

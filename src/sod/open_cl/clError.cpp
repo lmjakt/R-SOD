@@ -1,12 +1,15 @@
 #include "clError.h"
 #include <iostream>
+#include <Rcpp.h>
 
 void report_error(cl_int err){
-  std::cout << error_string(err) << std::endl;
+  Rprintf("%s\n", error_string(err));
+  //  std::cout << error_string(err) << std::endl;
 }
 
 void report_error_pf(const char* pf, cl_int err){
-  std::cout << pf << " : " << error_string(err) << std::endl;
+  Rprintf("%s : %s\n", pf, error_string(err));
+    //  std::cout << pf << " : " << error_string(err) << std::endl;
 }
 
 // the below code adapted from a posting by PaulS on the Khronos.org message boards
