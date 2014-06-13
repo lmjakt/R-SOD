@@ -53,14 +53,14 @@ class R_CL_DimSqueezer {
 #endif
 
 RCPP_MODULE(mod_R_DimSqueezer) {
-  class_<R_DimSqueezer>("R_DimSqueezer")
+  class_<R_DimSqueezer>("DimSqueezer")
     .constructor<NumericMatrix>()
     .method("squeeze", &R_DimSqueezer::squeeze)
     .method("squeezeDF", &R_DimSqueezer::squeezeDF)
     .method("useOpenMP", &R_DimSqueezer::useOpenMP)
     ;
 #ifdef HAVE_CL
-  class_<R_CL_DimSqueezer>("R_CL_DimSqueezer")
+  class_<R_CL_DimSqueezer>("DimSqueezer_CL")
     .constructor<NumericMatrix>()
     .method("squeeze", &R_CL_DimSqueezer::squeeze)
     ;

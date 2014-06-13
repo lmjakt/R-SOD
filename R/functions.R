@@ -2,6 +2,15 @@
 ## A set of functions that are useful for visualising squeezed data ##
 loadModule("mod_R_DimSqueezer", TRUE)
 
+
+## what happens if I define a variable here
+
+pointers <- c()
+
+add.pointer <- function(v){
+    pointers <- c(pointers, as.numeric(v))
+}
+
 ## makes a color for each of level of v
 ## with low (blue) to high (purple) via, cyan, green, yellow, red.
 ## this can also be done by reordering the

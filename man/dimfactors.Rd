@@ -45,7 +45,7 @@ serial.dim.factors(dim, iteration.no,
   \item{target.dim}{The target number of dimensions}
   \item{iteration.no}{The total number of iterations for the mapping
     procedure}
-  \item{red.end}{The proportion of the iterations which should be
+  \item{red.end}{The number of the iterations which should be
     used to remove superflous dimensions. Iterations after this are used
     to adjust the final positions.}
 }

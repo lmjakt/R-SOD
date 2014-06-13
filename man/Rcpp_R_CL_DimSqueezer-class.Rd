@@ -1,10 +1,10 @@
-\name{R_CL_DimSqueezer}
+\name{DimSqueezer_CL}
 \Rdversion{1.1}
 \docType{class}
-\alias{Rcpp_R_CL_DimSqueezer-class}
-\alias{R_CL_DimSqueezer}
+\alias{Rcpp_DimSqueezer_CL-class}
+\alias{DimSqueezer_CL}
 
-\title{Class \code{"Rcpp_R_CL_DimSqueezer"}}
+\title{Class \code{"Rcpp_DimSqueezer_CL"}}
 \description{
   %%  ~~ A concise (1-5 lines) description of what the class is. ~~
   Provides an S4 class that implements the self-organising-deltoids
@@ -36,15 +36,15 @@ All reference classes extend and inherit methods from \code{"\linkS4class{envRef
 %%  ~~objects to See Also as \code{\link{~~fun~~}}, ~~~
 %%  ~~or \code{\linkS4class{CLASSNAME}} for links to other classes ~~~
 %% the following give warnings, but never mind.
-\code{\linkS4class{Rcpp_R_DimSqueezer}}\cr
+\code{\linkS4class{Rcpp_DimSqueezer}}\cr
 \code{\link{serial.dim.factors}}\cr
 \code{\link{parallel.dim.factors}}\cr
 \code{\link{parallel.exp.dim.factors}}
 }
 
 \examples{
+\dontrun{
 require(SOD)
-showClass("Rcpp_R_CL_DimSqueezer")
 
 ## read in the f186 data set
 data("f186", package="SOD")
@@ -54,12 +54,12 @@ data("f186", package="SOD")
 ## densities to visualise the relationships between the
 ## cells.
 
-ds2 <- new(R_CL_DimSqueezer, as.matrix(f186[,7:12]) )
+ds2 <- new(DimSqueezer_CL, as.matrix(f186[,7:12]) )
 
 ## squeeze, 1000 iterations using a work group size of 64
 ## giving a 2 dimensional representation.
 sq2 <- ds2$squeeze(2, 1000, 64)
-
+}
 }
 
 \keyword{classes}
@@ -67,14 +67,9 @@ sq2 <- ds2$squeeze(2, 1000, 64)
   \describe{
     \item{\code{initialize(...)}:}{}
     \item{\code{finalize()}:}{ ~~ }
-    \item{\code{squeeze(target_dim, iter_no, local_work_size)}:}{
-      target_dim:      the number of dimensions in the final
-      representation\cr\cr
-      iter_no:         the number iterations within which the dimensions are
-      reduced to the target dimensionality\cr\cr
-      local_work_size: a measure of the parallelism of the GPU
-      processing. Usually set to 32.
-    }
+    \item{\code{squeeze(target_dim, iter_no, local_work_size)}:}{}
   }
+  
 }
+
 
