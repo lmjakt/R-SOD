@@ -1,0 +1,29 @@
+## Use autoconf, configure to find appropriate variable values
+
+## PKG_CPPFLAGS = -I/usr/local/include ## unlikely to be useful on Windows
+
+##PKG_CFLAGS = -fopenmp
+##change -fopenmp -> SHLIB_OPENMP_CXXFLAGS
+PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS) ## -DHAVE_CL assume no openCL on Windows ## without debugging add -g for debug
+
+PKG_LIBS = $(RCPP_LDFLAGS)  $(SHLIB_OPENMP_CXXFLAGS) -fopenmp
+
+## There should be some way of avoiding specifying all of these
+## files here (autoconf can probably handle it, but for now
+## this works, and is at least conceptuallly simple)
+##
+## Note however, that the whitespace seems to make a 
+## big difference so there is some care needed in specifying
+## the files.
+	
+HEADERS =	R_DimSqueezer.h sod/node_set.h sod/stressInfo.h sod/mappingInfo.h sod/DistanceMapper.h
+
+SOURCES =	R_DimSqueezer.cpp sod/node_set.cpp sod/DistanceMapper.cpp 
+
+OBJECTS =	R_DimSqueezer.o sod/node_set.o sod/DistanceMapper.o 
+
+all: $(SHLIB)
+
+clean:
+	@rm -f $(OBJECTS)
+
