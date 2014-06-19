@@ -99,6 +99,7 @@ R_DimSqueezer::R_DimSqueezer(Rcpp::NumericMatrix r_positions)
 
 R_DimSqueezer::~R_DimSqueezer()
 {
+  Rprintf("Deleting R_DimSqueezer\n");
   delete []positions;
   delete []distances;
   delete mapper;
@@ -179,4 +180,91 @@ Rcpp::List R_CL_DimSqueezer::squeeze(unsigned int target_dimensionality, unsigne
   delete []mapInfo.mapped_points;
   return(return_data);
 }
+#endif
+
+// Accessor functions from here //
+// Try using direct .Call interface 
+// to these functions.
+
+
+RcppExport SEXP DimSqueezer(SEXP a){
+  BEGIN_RCPP
+  NumericMatrix x(a);
+  XPtr<R_DimSqueezer> ptr( new R_DimSqueezer(x), true );
+  return(ptr);
+  END_RCPP
+}
+
+/*
+RcppExport SEXP DestroyDimSqueezer(SEXP a){
+  BEGIN_RCPP
+    XPtr<R_DimSqueezer> ptr(a);
+  Rprintf("DestroyDimSqueezer\n");
+  //if(ptr){
+  //  delete ptr;
+  //  ptr = 0;
+  //}
+  return( R_NilValue );
+  END_RCPP
+}
+*/
+
+RcppExport SEXP squeeze(SEXP p, SEXP td, SEXP it){
+  BEGIN_RCPP
+  unsigned int target_dim = as<unsigned int>(td);
+  unsigned int iter = as<unsigned int>(it);
+  XPtr<R_DimSqueezer> ptr( p );  // check for null value or does that cause an exception?
+  if(!ptr){
+    throw(std::runtime_error("Null DimSqueezer pointer"));
+    // throw is better than returning an error code as
+    // assignment will be avoided.
+  }
+  return(wrap( ptr->squeeze(target_dim, iter) ));
+  END_RCPP
+}
+
+RcppExport SEXP squeezeDF(SEXP p, SEXP df){
+  BEGIN_RCPP
+  NumericMatrix dimFactors = as<NumericMatrix>(df);
+  XPtr<R_DimSqueezer> ptr( p );
+  if(!ptr)
+    throw(std::runtime_error("Null DimSqueezer pointer"));
+  return(wrap( ptr->squeezeDF(dimFactors)));
+  END_RCPP
+}
+
+RcppExport SEXP useOpenMP(SEXP p, SEXP uMP){
+  BEGIN_RCPP
+    bool useMP = as<bool>(uMP);
+  XPtr<R_DimSqueezer> ptr( p );
+  if(!ptr)
+    throw(std::runtime_error("Null DimSqueezer pointer"));
+  ptr->useOpenMP(useMP);
+  return(R_NilValue);
+  END_RCPP
+}
+
+// openCL wrappers
+#ifdef HAVE_CL
+
+RcppExport SEXP DimSqueezer_CL(SEXP m){
+  BEGIN_RCPP
+  NumericMatrix a(m);
+  XPtr<R_CL_DimSqueezer> ptr( new R_CL_DimSqueezer(a), true );
+  return(ptr);
+  END_RCPP
+}
+
+RcppExport SEXP squeeze_cl(SEXP p, SEXP td, SEXP it, SEXP wgno){
+  BEGIN_RCPP
+  unsigned int target_dim = as<unsigned int>(td);
+  unsigned int iter_no = as<unsigned int>(it);
+  unsigned int wkgroup_no = as<unsigned int>(wgno);
+  XPtr<R_CL_DimSqueezer> ptr( p );
+  if(!ptr)
+    throw(std::runtime_error("Null DimSqueezer_CL pointer"));
+  return(wrap( ptr->squeeze(target_dim, iter_no, wkgroup_no)));
+  END_RCPP
+}
+
 #endif

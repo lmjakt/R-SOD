@@ -52,6 +52,11 @@ class R_CL_DimSqueezer {
 };
 #endif
 
+// Rcpp_Module creates code that can crash the R session if the
+// the values of external pointers become NULL. Hence it can't
+// really be used.
+
+/*
 RCPP_MODULE(mod_R_DimSqueezer) {
   class_<R_DimSqueezer>("DimSqueezer")
     .constructor<NumericMatrix>()
@@ -66,5 +71,6 @@ RCPP_MODULE(mod_R_DimSqueezer) {
     ;
 #endif
 };
+*/
 
 #endif
