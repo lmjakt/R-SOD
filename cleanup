@@ -1,0 +1,7 @@
+#!/bin/sh
+
+rm R/functions.R
+cd src
+make -f Makevars clean
+rm SOD.so
+rm Makevars

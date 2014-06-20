@@ -12,7 +12,7 @@
     \item dox: whether EGFP-Etv2 was induced by dox (1) or not (0).
     \item time: time of induction.
     \item image: an identifier of the image set from which the data row
-    was obatined.
+    was obtained.
     \item cell: an identifier for the cell.
     \item c_area: areas of cells.
     \item n_area: area of cell nuclei.

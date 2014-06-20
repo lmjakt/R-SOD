@@ -144,6 +144,22 @@ if test ${HAVE_CL} = yes; then
    SOD_OBJECTS="$SOD_OBJECTS $SOD_CL_OBJECTS"
 fi
 
+## if we are on Darwin, then there's a fair chance that we don't
+## have access to openMP. 
+## so we need to check for openMP
+## AC_OPENMP sets the variables OPENMP_CFLAGS AND OPENMP_CXXFLAGS
+
+AC_OPENMP
+SOD_CXXFLAGS="${SOD_CXXFLAGS} ${OPENMP_CXXFLAGS}"
+SOD_PKG_LIBS="${SOD_PKG_LIBS} ${OPENMP_CXXFLAGS}"
+
+
+## if we don't have openCL, we should not provide the R functions
+## 
+R_HAVE_CL=FALSE
+if test ${HAVE_CL} = yes; then
+   R_HAVE_CL=TRUE
+fi
 
 echo $CC
 echo $CFLAGS
@@ -156,5 +172,6 @@ AC_SUBST(SOD_CXXFLAGS)
 AC_SUBST(SOD_HEADERS)
 AC_SUBST(SOD_SOURCES)
 AC_SUBST(SOD_OBJECTS)
-AC_CONFIG_FILES([src/Makevars])
+AC_SUBST(R_HAVE_CL)
+AC_CONFIG_FILES([src/Makevars R/functions.R])
 AC_OUTPUT

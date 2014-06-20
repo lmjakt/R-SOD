@@ -5,34 +5,7 @@
 ## Module is dangerous; don't load, but
 ## use the following functions instead
 
-if(FALSE){
-tag.dimSqueezer <- "DimSqueezer"
-DimSqueezer <- function(m){
-#   tag <- "DimSqueezer"  ## ?? 
-    .Call("DimSqueezer", m,
-          get("tag2.dimSqueezer", parent.frame()), "SOD")
-}
-
-DimSqueezer_CL<- function(m){
-    .Call("DimSqueezer_CL", m, "SOD")
-}
-
-
-squeeze <- function(ds, target.dim, iter.no){
-#    if(identical(ds, new('externalptr')))
-#        stop("Null DimSqueezer pointer")
-    ## the pointer should be checked by the C / C++ code
-    ## not in R
-    .Call("squeeze", ds, target.dim, iter.no, "SOD")
-}
-}
-
-## the above seems to be difficult to make safe as I can't seem to
-## check the pointer type at the C-level. For whatver, reason, the
-## tag disappears. Not sure why, but.. what the hell.
-
-## so lets try:
-##if(FALSE){
+## Use reference classes:
 DimSqueezer <- setRefClass("DimSqueezer",
                            fields=list(
                                pointer="externalptr",
@@ -44,35 +17,44 @@ DimSqueezer$methods(initialize =
                     },
                     squeeze =
                     function(target_dim, iter_no){
-                        .Call("squeeze", pointer, target_dim, iter_no)
+                        .Call("squeeze", pointer, target_dim, iter_no, "SOD")
+                    },
+                    squeezeDF =
+                    function(dimFactors){
+                        .Call("squeezeDF", pointer, dimFactors, "SOD")
+                    },
+                    useOpenMP =
+                    function(useOMP){
+                        .Call("useOpenMP", pointer, useOMP, "SOD")
                     }
                     )
 
 ## note that we don't need to register a finalizer as the
 ## Rcpp ExtPtr class seems to take care of that.
-DimSqueezer$lock("pointer")
-
-## Repeat for the CL based Class
-DimSqueezer_CL <- setRefClass("DimSqueezer_CL",
-                              fields=list(
-                                  pointer="externalptr",
-                                  data.matrix="matrix"))
-
-DimSqueezer_CL$methods(initialize =
-                       function(m){
-                           data.matrix <<- m
-                           pointer <<- .Call("DimSqueezer_CL", m, "SOD")
-                       },
-                       squeeze =
-                       function(target_dim, iter_no, wksize){
-                           .Call("squeeze_cl", pointer, target_dim, iter_no, wksize)
-                       }
-                       )
-
-## note that we don't need to register a finalizer as the
-## Rcpp ExtPtr class seems to take care of that.
-DimSqueezer_CL$lock("pointer")
-
+if(@R_HAVE_CL@){
+    DimSqueezer$lock("pointer")
+    
+    ## Repeat for the CL based Class
+    DimSqueezer_CL <- setRefClass("DimSqueezer_CL",
+                                  fields=list(
+                                      pointer="externalptr",
+                                      data.matrix="matrix"))
+    
+    DimSqueezer_CL$methods(initialize =
+                           function(m){
+                               data.matrix <<- m
+                               pointer <<- .Call("DimSqueezer_CL", m, "SOD")
+                           },
+                           squeeze =
+                           function(target_dim, iter_no, wksize){
+                               .Call("squeeze_cl", pointer, target_dim, iter_no, wksize)
+                           }
+                           )
+    
+    ## note that we don't need to register a finalizer as the
+    ## Rcpp ExtPtr class seems to take care of that.
+    DimSqueezer_CL$lock("pointer")
+}
 
 ## this is good for safety, but does not allow me to automatically
 ## rebuild the pointer from the arguments.

@@ -4,9 +4,13 @@ PKG_CPPFLAGS = -I/usr/local/include
 
 ##PKG_CFLAGS = -fopenmp
 ##change -fopenmp -> SHLIB_OPENMP_CXXFLAGS
-PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS) -DHAVE_CL ## without debugging add -g for debug
+##PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS) -DHAVE_CL -fopenmp ## without debugging
+##add -g for debug
 
-PKG_LIBS = $(RCPP_LDFLAGS)  -lOpenCL $(SHLIB_OPENMP_CXXFLAGS) -fopenmp
+## configure needs to check for open MP
+PKG_CXXFLAGS = -DHAVE_CL -fopenmp ## without debugging add -g for debug
+
+PKG_LIBS = $(RCPP_LDFLAGS)  -lOpenCL -fopenmp ## $(SHLIB_OPENMP_CXXFLAGS) -fopenmp
 
 ## There should be some way of avoiding specifying all of these
 ## files here (autoconf can probably handle it, but for now

@@ -15,21 +15,23 @@
     \code{plt.stress} plots the change of the sum of errors in the
     inter-node distances.
   }
-  These are simple convenience functions that the user may wish to
-  extend depending on the visualisation requirements.
+  These are simple convenience functions that mainly serve as examples
+  that the user may wish to
+  extend depending.
 
 }
 
 \usage{
 plt.points(sq, col=hsv.scale(sq$node_stress), x=1, y=2,
-invert.y=FALSE, xlab=NA, ylab=NA, ...)
+           invert.y=FALSE, xlab=NA, ylab=NA, ...)
 
 plt.concentric(sq, cex.data, col=hsv.scale(1:ncol(cex.data)),x=1,
-y=2, cex.max=3, invert.y=FALSE, pch=19, xlab=NA, ylab=NA, leg.pos=NULL, ...)
+               y=2, cex.max=3, invert.y=FALSE, pch=19, xlab=NA,
+               ylab=NA, leg.pos=NULL, ...)
 
 plt.stress(sq, bg.alpha=0.5, bg.sat=1, bg.val=0.75, col='black', lwd=1,
-lty=1, main="Error / Dimension",
-xlab="iteration", ylab="error / dimensionality")
+           lty=1, main="Error / Dimension",
+           xlab="iteration", ylab="error / dimensionality")
 
 }
 

@@ -4,9 +4,13 @@ PKG_CPPFLAGS = @SOD_CPPFLAGS@
 
 ##PKG_CFLAGS = -fopenmp
 ##change -fopenmp -> SHLIB_OPENMP_CXXFLAGS
-PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS) @SOD_CXXFLAGS@ ## without debugging add -g for debug
+##PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS) @SOD_CXXFLAGS@ ## without debugging
+##add -g for debug
 
-PKG_LIBS = $(RCPP_LDFLAGS) @SOD_PKG_LIBS@ $(SHLIB_OPENMP_CXXFLAGS) -fopenmp
+## configure needs to check for open MP
+PKG_CXXFLAGS = @SOD_CXXFLAGS@ ## without debugging add -g for debug
+
+PKG_LIBS = $(RCPP_LDFLAGS) @SOD_PKG_LIBS@ ## $(SHLIB_OPENMP_CXXFLAGS) -fopenmp
 
 ## There should be some way of avoiding specifying all of these
 ## files here (autoconf can probably handle it, but for now

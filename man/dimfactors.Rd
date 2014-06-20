@@ -19,7 +19,7 @@
   one row for each iteration of the mapping process.
   \itemize{
     \item
-    \code{parallel.dim.factors}, \code{parallel.exp.dim.factors}\cr 
+    \code{parallel.dim.factors},\cr \code{parallel.exp.dim.factors}\cr 
     Reduce the superfluors dimensions in parallel, using a linear or
     exponential decrease respectively.
     \item
