@@ -1,6 +1,6 @@
 #!/bin/sh
 
-rm R/functions.R
+#rm R/functions.R ## windows does not like this
 cd src
 make -f Makevars clean
 rm SOD.so

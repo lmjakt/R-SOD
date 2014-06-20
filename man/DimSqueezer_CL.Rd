@@ -68,8 +68,9 @@ All reference classes extend and inherit methods from \code{"\linkS4class{envRef
 \code{\link{parallel.exp.dim.factors}}
 }
 \examples{
-showClass("DimSqueezer_CL")
 \dontrun{
+showClass("DimSqueezer_CL")
+
 ## Make an openCL accelerated squeezer object
 ## note this is only available where both the physical
 ## hardware and the appropriate development enviroment

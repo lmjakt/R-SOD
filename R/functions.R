@@ -28,11 +28,12 @@ DimSqueezer$methods(initialize =
                         .Call("useOpenMP", pointer, useOMP, "SOD")
                     }
                     )
-DimSqueezer$lock("pointer")
 
 ## note that we don't need to register a finalizer as the
 ## Rcpp ExtPtr class seems to take care of that.
-if(@R_HAVE_CL@){
+if(FALSE){
+    DimSqueezer$lock("pointer")
+    
     ## Repeat for the CL based Class
     DimSqueezer_CL <- setRefClass("DimSqueezer_CL",
                                   fields=list(
