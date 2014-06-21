@@ -6,12 +6,12 @@
 Heuristict mapping of N-dimensional nodes to M-dimensions
 }
 \description{
-Maps points in N-dimensions to M-dimensions using a heuristic that 
+Maps points in N- to M-dimensions (where N > M) using a heuristic that 
 tries to retain correct inter-node distances by rearranging nodes
 using errors in the inter-node distances induced by gradually shrinking
 the number of dimensions.
 
-The primary purpose of this is is to represent N-dimensional nodes 
+The primary purpose of this is to represent N-dimensional nodes 
 (points) in a 2-D or 3-D space in order to visualise the relationships
 between nodes.
 
@@ -109,7 +109,7 @@ sq1 <- ds1$squeeze(2, 200)
 \dontrun{
 ## Make an openCL accelerated squeezer object
 ## note this is only available where both the physical
-## hardware and the appropriate development enviroment
+## hardware and the appropriate development environment
 ## is available.
 ds2 <- DimSqueezer_CL$new(m)
 

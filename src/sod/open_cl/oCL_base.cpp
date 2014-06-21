@@ -189,7 +189,7 @@ void OCL_base::init_kernel(const char* kernel_source, const char* kernel_name,
     }
     in.seekg(0, std::ios::end);
     ssize_t end_pos = in.tellg();
-    Rprintf("in.tellg() reports : %d\n", in.tellg());
+    Rprintf("in.tellg() reports : %d\n", end_pos);
     in.seekg(0, std::ios::beg);
     if(!end_pos){
       Rprintf("Unable to read from kernel source file\n");

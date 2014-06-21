@@ -16,8 +16,7 @@
     inter-node distances.
   }
   These are simple convenience functions that mainly serve as examples
-  that the user may wish to
-  extend depending.
+  that the user may wish to extend.
 
 }
 
@@ -40,7 +39,7 @@ plt.stress(sq, bg.alpha=0.5, bg.sat=1, bg.val=0.75, col='black', lwd=1,
     'stress', 'mapDims', 'pos', 'time', 'node_stress'.}
   \item{col}{A vector of colours for each row of sq$pos, or for
     plt.concentric a colour for each column of cex.data. For
-  plt.stress the \code{col} argument gives the colour for the stress points.}
+    plt.stress the \code{col} argument gives the colour for points plotted.}
   \item{x}{The dimension to plot on the x-axis.}
   \item{y}{The dimension to plot on the y-axis.}
   \item{invert.y}{A boolean determining whether the y-axis should be inverted}
@@ -51,12 +50,12 @@ plt.stress(sq, bg.alpha=0.5, bg.sat=1, bg.val=0.75, col='black', lwd=1,
   \item{cex.data}{A numeric matrix providing numerical descriptions of
     the items represented by each point (1 row per point). Each column
     represents a numerical descriptor of some sort, and will be
-    plotted as a series of conentric points where the incremental
-    area of each point is proportional to the value scaled across all
-    columns}
+    plotted as a series of concentric discs or circles where the incremental
+    area of each disc/circle is proportional to the value scaled across all
+    columns.}
   \item{leg.pos}{The position of an optional legend. If NULL (the
     default) no legend will be drawn. The leg.pos should be specified as
-    for \code{legend}, (eg. 'topright', 'bottomleft'). The colnames of
+    for \code{legend}, (eg. 'topright', 'bottomleft'). The column names of
     cex.data will be used for the legend text.}
   \item{bg.alpha, bg.sat, bg.val}{Parameters specifying the background
     colours for the plt.stress functions. These colours are used to

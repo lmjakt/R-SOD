@@ -13,7 +13,7 @@
   New objects are made by calling the initializer using either
   \code{DimSqueezer_CL$new(m)} or \code{new("DimSqueezer_CL", m)}.\cr
   The initializer returns an object from which the methods are called
-  using the \code{$} operator. See the examples section.
+  using the \code{$} operator. See the examples section for usage.
 }
 \section{Extends}{
 
@@ -42,7 +42,7 @@ All reference classes extend and inherit methods from \code{"\linkS4class{envRef
       completely hung state) if specifying a work group size (\code{wksize}
       argument) that is larger than the
       \code{PREFERRED_WORK_GROUP_SIZE_MULTIPLE}. (This value is printed when
-      the class is initialized).\cr
+      the class is initialized.)\cr
       Binary distributions of this package are unlikely to provide access this
       class, though that will depend on the compilation environment.
       I have only tested this on
@@ -73,11 +73,11 @@ showClass("DimSqueezer_CL")
 
 ## Make an openCL accelerated squeezer object
 ## note this is only available where both the physical
-## hardware and the appropriate development enviroment
+## hardware and the appropriate development environment
 ## is available.
 data(f186)
 
-## use columns 7:12 as these have comparable datan
+## use columns 7:12 as these have comparable data
 ds <- DimSqueezer_CL$new( as.matrix(f186[,7:12]) )
 
 ## squeeze, 1000 iterations using a work group size of 64

@@ -1,4 +1,4 @@
-\name{SOD: hsv.scale}
+\name{SOD. hsv.scale}
 \alias{hsv.scale}
 
 \title{hsv.scale: A colour gradient}
@@ -6,7 +6,7 @@
 \description{
   Provides colours for a vector of values, with colours ranging from
   blue (min) to purple (max) via cyan, green, yellow and
-  red. The colours are specified via the hsv method.
+  red. The colours are specified via the hsv function.
 }
 
 \usage{

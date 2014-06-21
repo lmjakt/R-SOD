@@ -20,10 +20,10 @@
   \itemize{
     \item
     \code{parallel.dim.factors},\cr \code{parallel.exp.dim.factors}\cr 
-    Reduce the superfluors dimensions in parallel, using a linear or
+    Reduce the superfluous dimensions in parallel, using a linear or
     exponential decrease respectively.
     \item
-    \code{serial.dim.factors}\cr Reduces superflous dimensions serially one
+    \code{serial.dim.factors}\cr Reduces superfluous dimensions serially one
     after the other.
   }
 }
