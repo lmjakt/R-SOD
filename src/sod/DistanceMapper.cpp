@@ -75,8 +75,9 @@ MappingInfo DistanceMapper::reduce_dimensions(std::vector<std::vector<float> >& 
     Rprintf("Error: reduce_dimensions no iterations specified\n");
     return(dummyInfo);
   }
+  unsigned int df_size = dimFactorVector[0].size();
   for(unsigned int i=0; i < dimFactorVector.size(); ++i){
-    if(dimFactorVector[i].size() != dimension_no){
+    if(dimFactorVector[i].size() != df_size){
       Rprintf("Incorrect DimFactorVector specified iteration %d has %d dimensions\n",
 	      i, dimFactorVector[i].size());
       Rprintf("Using default dimension strategy\n");
@@ -153,6 +154,11 @@ float DistanceMapper::adjustForces()
 
   // To speed this up we can pre-allocate the memory in the constructor
   
+  unsigned int dim_no = dimFactors.size() < dimension_no ? dimFactors.size() : dimension_no;
+  // this is wasteful as we have already assigned the force vectors;
+  // but since dimension_no is used elsewhere we have to be a little bit careful with
+  // changing the forceVector allocation.
+
   #pragma omp parallel for if (useOpenMP)
   for(unsigned int i=0; i < node_no; ++i){
     float* cv = coordinateVectors + i * dimension_no;
@@ -164,7 +170,7 @@ float DistanceMapper::adjustForces()
       memset((void*)cv, 0, sizeof(float) * dimension_no);
       float f_distance = node_distances[ i * node_no + j ]; // the full distance
       float r_distance = 0;                                 // distance in reduced space
-      for(unsigned int k=0; k < dimension_no; ++k){
+      for(unsigned int k=0; k < dim_no; ++k){
 	cv[k] = dimFactors[k] * (node_i[k] - node_j[k]);
 	r_distance += (cv[k] * cv[k]);
       }
