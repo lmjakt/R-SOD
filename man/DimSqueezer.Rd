@@ -86,13 +86,17 @@ plt.stress(sq)
       a numeric matrix used to create the DimSqueezer.}
   }
 }
+
 \section{Methods}{
   \describe{
     \item{\code{initialize(m)}:}{ Initializes the object. m should be a
       numeric matrix (use by calling new as in examples).
     }
     \item{\code{squeeze(target_dim, iter_no)}:}{ Squeezes points into
-      \code{target_dim} dimensions in \code{iter_no} iterations. Returns a
+      \code{target_dim} dimensions in \code{iter_no} iterations. By
+      default the function will continue iterating until no more stress
+      is removed. This can be changed by \code{residual(FALSE)}.
+      Returns a
       named list containing the new coordinates in \code{$pos}, the
       stress evolution in \code{$stress}, the mapping dimensionality in
       \code{$mapDims} and the stress (sum error) at each node in
@@ -104,7 +108,14 @@ plt.stress(sq)
       \code{.dim.factors} methods. Returns a named list as for \code{squeeze}.
     }
     \item{\code{useOpenMP(useOMP)}:}{ Specify whether to use openMP
-      based parallelisation. \code{useOMP} should be either TRUE or
-      FALSE.}
+      based parallelisation. \code{useOMP} should be either \code{TRUE} or
+      \code{FALSE}.
+    }
+    \item{\code{residual(remResidual)}:}{ Specify whether residual
+      stress should be removed by further iterations after the specified
+      number of iterations (the default state). \code{remResidual}
+      should be \code{TRUE} or \code{FALSE}.
+    }
   }
 }
+

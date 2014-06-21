@@ -10,6 +10,7 @@ DistanceMapper::DistanceMapper(unsigned int node_no, unsigned int dimension_no, 
   forceVectors = 0;
   mappedNodes = 0;
   coordinateVectors = 0;
+  _remove_residual_stress = true;
   if(node_no && dimension_no){
     dimFactors.resize(dimension_no);
     dimFactors.assign(dimension_no, 1.0);
@@ -115,7 +116,7 @@ MappingInfo DistanceMapper::reduce_dimensions(std::vector<std::vector<float> >& 
   Rprintf("\n");
   // Reduce stress while it is decreasing, or we reach a max iteration no.
   float last_stress = stress_data.back().stress;
-  bool remove_residual_stress = true;
+  bool remove_residual_stress = _remove_residual_stress;
   while(remove_residual_stress && stress_data.size() < (3 * iter_no)){
     Rprintf(".");
     float stress = adjustForces();
@@ -141,6 +142,11 @@ MappingInfo DistanceMapper::reduce_dimensions(std::vector<std::vector<float> >& 
 void DistanceMapper::use_openMP(bool useMP)
 {
   useOpenMP = useMP;
+}
+
+void DistanceMapper::removeResidualStress(bool remResidual)
+{
+  _remove_residual_stress = remResidual;
 }
 
 float DistanceMapper::adjustForces()

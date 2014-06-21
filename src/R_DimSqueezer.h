@@ -21,6 +21,7 @@ class R_DimSqueezer {
   Rcpp::List squeeze(unsigned int target_dimensionality, unsigned int iter_no);
   Rcpp::List squeezeDF(NumericMatrix dimFactors);
   void useOpenMP(bool use_openMP);
+  void removeResidualStress(bool remResidual);
   
  private:
   DistanceMapper* mapper;

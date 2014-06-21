@@ -26,6 +26,10 @@ DimSqueezer$methods(initialize =
                     useOpenMP =
                     function(useOMP){
                         .Call("useOpenMP", pointer, useOMP, "SOD")
+                    },
+                    residual =
+                    function(remResidual){
+                        .Call("removeResidualStress", pointer, remResidual, "SOD")
                     }
                     )
 DimSqueezer$lock("pointer")

@@ -137,6 +137,12 @@ void R_DimSqueezer::useOpenMP(bool use_openMP)
     mapper->use_openMP(use_openMP);
 }
 
+void R_DimSqueezer::removeResidualStress(bool remResidual)
+{
+  if(mapper)
+    mapper->removeResidualStress(remResidual);
+}
+
 ////////////// openCL based Distance mapper  ////////////////////
 #ifdef HAVE_CL
 R_CL_DimSqueezer::R_CL_DimSqueezer(Rcpp::NumericMatrix r_positions)
@@ -240,6 +246,17 @@ RcppExport SEXP useOpenMP(SEXP p, SEXP uMP){
   if(!ptr)
     throw(std::runtime_error("Null DimSqueezer pointer"));
   ptr->useOpenMP(useMP);
+  return(R_NilValue);
+  END_RCPP
+}
+
+RcppExport SEXP removeResidualStress(SEXP p, SEXP remRes){
+  BEGIN_RCPP
+  bool remove_residual = as<bool>(remRes);
+  XPtr<R_DimSqueezer> ptr( p );
+  if(!ptr)
+    throw(std::runtime_error("Null DimSqueezer pointer"));
+  ptr->removeResidualStress(remove_residual);
   return(R_NilValue);
   END_RCPP
 }

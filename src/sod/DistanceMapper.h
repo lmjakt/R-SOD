@@ -34,6 +34,7 @@ class DistanceMapper
   MappingInfo reduce_dimensions(unsigned int iter_no, unsigned int target_dim);
   
   void use_openMP(bool useMP);
+  void removeResidualStress(bool remResidual);
 
  private:
   unsigned int node_no;
@@ -49,6 +50,7 @@ class DistanceMapper
   float* mappedNodes;                   // node_no * dimension_no
   std::vector<float> node_stress;       // node_no
   unsigned int target_dimensionality;
+  bool _remove_residual_stress;
 
   // mapping functions
   float adjustForces();

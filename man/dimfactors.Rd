@@ -8,7 +8,7 @@
 
 \description{
   Functions that provide a matrix of dimensionality factors that can be
-  used by the \code{R_DimSqueezer$squeezeDF()} function.\cr
+  used by the \code{R_DimSqueezer} \code{squeezeDF()} function.\cr
   During the mapping process the dimensionality is gradually
   reduced. The dimensionality at a given time is represented by a vector
   of values (one for each dimension) lying within the range 0-1. 0
@@ -25,6 +25,16 @@
     \item
     \code{serial.dim.factors}\cr Reduces superfluous dimensions serially one
     after the other.
+  }
+  \if{latex}{
+    \figure{parSerialStress.pdf}\cr
+    Reduction of dimensions using parallel (left)
+    or serial (right) strategies. The filled polygons represent the
+    dimensionality, starting (left) with a fully 6-dimensional space
+    that is gradually reduced to a two dimensions during the mapping
+    process.\cr
+    Both \code{squeeze} and \code{squeezeDF} will continue iterating
+    after the specified iteration number until a minimum is reached.
   }
 }
 
@@ -54,6 +64,8 @@ serial.dim.factors(dim, iteration.no,
   Returns a numeric matrix with \code{iteration.no} rows and \code{dim}
   columns.
 }
+
+
 
 \examples{
 ## reduce to two dimensions using (0.75 * 200) dimensions
